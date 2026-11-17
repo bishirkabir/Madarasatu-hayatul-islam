@@ -25,6 +25,17 @@ jobs:
       - name: Extract Android project
         run: unzip -o Madarasatu_Hayatul_Islam_Phone_Build.zip -d .
 
+      - name: Fix Java and Kotlin versions
+        run: |
+          python3 -c "from pathlib import Path; p=Path('app/build.gradle'); s=p.read_text(); s=s.replace('android {', '''android {
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+              kotlinOptions {
+                  jvmTarget = '17'
+              }''', 1); p.write_text(s)"
+
       - name: Build APK
         run: gradle assembleDebug
 
@@ -32,3 +43,4 @@ jobs:
         with:
           name: Madarasatu-Hayatul-Islam-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+
